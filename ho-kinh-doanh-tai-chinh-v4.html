@@ -288,11 +288,11 @@ const data = {
    BACKEND API CONFIG
    Đổi API_BASE sang URL server thật khi deploy
 ══════════════════════════════════════════════════════ */
-const API_BASE = window.location.hostname === 'localhost' || 
-                 window.location.hostname === '127.0.0.1' || 
+const API_BASE = window.location.hostname === 'localhost' ||
+                 window.location.hostname === '127.0.0.1' ||
                  window.location.protocol === 'file:'
   ? 'http://localhost:3000'
-  : '';
+  : 'https://hkd-backend-production.up.railway.app';
 /* ── Auth state ─────────────────────────────────────── */
 let authState = {
   user:         JSON.parse(localStorage.getItem('hkd_user')||'null'),
