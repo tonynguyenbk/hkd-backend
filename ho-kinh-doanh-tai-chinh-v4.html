@@ -1958,10 +1958,35 @@ function renderCurrentStep(){
     const snap=saveSnapshot(res);
     el.innerHTML=renderStep4(res);
     /* Save to server if logged in */
-    if(snap && isLoggedIn() && authState.activeHkdId) {
-      saveSnapshotRemote(snap, authState.activeHkdId).then(id=>{
-        if(id) snap._serverId = id;
-      });
+    if(snap && isLoggedIn()) {
+      (async () => {
+        /* Tự tạo HKD profile nếu chưa có */
+        if (!authState.activeHkdId && data.info.name) {
+          try {
+            const cr = await apiFetch('/api/hkd', {
+              method: 'POST',
+              body: JSON.stringify({
+                name:     data.info.name,
+                industry: data.info.industry || 'thuong_mai',
+                size:     data.info.size     || 'sieu_nho',
+                region:   data.info.region   || 'tinh_lon',
+                province: data.info.province || '',
+                duration: data.info.duration || ''
+              })
+            });
+            if (cr.ok) {
+              const { profile } = await cr.json();
+              authState.activeHkdId = profile.id;
+              localStorage.setItem('hkd_active_id', profile.id);
+              authState.hkdProfiles.push(profile);
+            }
+          } catch(e) { console.warn('Tạo HKD profile thất bại:', e); }
+        }
+        if (authState.activeHkdId) {
+          const id = await saveSnapshotRemote(snap, authState.activeHkdId);
+          if(id) snap._serverId = id;
+        }
+      })();
     }
     /* AI tư vấn: dùng backend proxy khi đã đăng nhập */
     const hist = loadHistory();
