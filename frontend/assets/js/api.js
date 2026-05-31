@@ -2,7 +2,7 @@ const API_BASE = window.location.hostname === 'localhost' ||
                  window.location.hostname === '127.0.0.1' ||
                  window.location.protocol === 'file:'
   ? 'http://localhost:3000'
-  : 'https://hkd-backend-production.up.railway.app';
+  : 'https://hkd-api.onrender.com';
 /* ── Auth state ─────────────────────────────────────── */
 let authState = {
   user:         JSON.parse(localStorage.getItem('hkd_user')||'null'),
