@@ -32,11 +32,9 @@
 
   /* ── Language toggle ──────────────────── */
   .lang-toggle {
-    position: fixed;
-    top: 18px; right: 24px;
     display: flex;
     gap: 4px;
-    z-index: 100;
+    margin-left: auto;
   }
   .lang-btn {
     padding: 5px 13px;
@@ -90,6 +88,7 @@
     align-items: center;
     gap: 14px;
     margin-bottom: 48px;
+    width: 100%;
   }
   .brand-icon {
     width: 48px; height: 48px;
@@ -292,12 +291,6 @@
 </head>
 <body>
 
-<!-- Language toggle -->
-<div class="lang-toggle">
-  <button class="lang-btn active" id="btn-vi" onclick="setLang('vi')">VI</button>
-  <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
-</div>
-
 <!-- Left branding panel -->
 <div class="left">
   <div class="brand">
@@ -305,6 +298,11 @@
     <div>
       <div class="brand-text-top" data-i18n="brand_top">Hộ Kinh Doanh Việt Nam</div>
       <div class="brand-text-main">HKD Financial Health</div>
+    </div>
+    <!-- Language toggle inside left panel on dark background -->
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btn-vi" onclick="setLang('vi')">VI</button>
+      <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
     </div>
   </div>
 
