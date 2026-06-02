@@ -98,13 +98,14 @@ async function doLogout() {
 function updateHeaderUserChip() {
   const existing = document.getElementById('header-user');
   if (!existing) return;
+  const _t = (typeof t === 'function') ? t : (k) => k;
   if (isLoggedIn()) {
-    existing.innerHTML = `<div class="user-chip" onclick="doLogout()" title="Bấm để đăng xuất">
+    existing.innerHTML = `<div class="user-chip" onclick="doLogout()" title="${_t('header.logout')}">
       👤 ${authState.user.full_name||authState.user.email.split('@')[0]}
-      <span style="font-size:10px;opacity:.7">Đăng xuất</span>
+      <span style="font-size:12px;opacity:.7">${_t('header.logout')}</span>
     </div>`;
   } else {
-    existing.innerHTML = `<a href="login.html" class="btn btn-secondary" style="font-size:12px;padding:5px 14px;text-decoration:none">Đăng nhập</a>`;
+    existing.innerHTML = `<a href="login.html" class="btn btn-secondary" style="font-size:13px;padding:5px 14px;text-decoration:none">${_t('header.login')}</a>`;
   }
 }
 

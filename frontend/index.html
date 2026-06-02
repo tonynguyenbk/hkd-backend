@@ -5,51 +5,75 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Phân Tích Sức Khỏe Tài Chính HKD — v4</title>
 <link rel="stylesheet" href="assets/css/style.css">
+<style>
+.lang-toggle{display:flex;gap:3px;margin-left:8px;}
+.lang-btn{padding:4px 10px;border-radius:5px;border:1px solid rgba(212,168,67,.3);background:transparent;color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;letter-spacing:.4px;}
+.lang-btn.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);}
+.lang-btn:hover:not(.active){border-color:var(--gold);color:var(--gold-light);}
+</style>
 </head>
 <body>
 
 <div class="header">
   <div class="h-logo">₫</div>
   <div>
-    <div class="h-title">Sức Khỏe Tài Chính Hộ Kinh Doanh v2</div>
-    <div class="h-sub">Bộ chỉ số tài chính · Khung pháp lý 2026 · Tư vấn AI</div>
+    <div class="h-title" data-i18n="header.title">Sức Khỏe Tài Chính Hộ Kinh Doanh v2</div>
+    <div class="h-sub" data-i18n="header.sub">Bộ chỉ số tài chính · Khung pháp lý 2026 · Tư vấn AI</div>
   </div>
   <div id="header-user"></div>
+  <div class="lang-toggle">
+    <button class="lang-btn active" data-lang="vi" onclick="i18n.setLang('vi')">VI</button>
+    <button class="lang-btn" data-lang="en" onclick="i18n.setLang('en')">EN</button>
+  </div>
   <div class="h-badge">v4</div>
 </div>
 
-<!-- PERIOD BAR — FIX #1 -->
 <div class="period-bar">
-  <span class="period-label">Kỳ phân tích:</span>
+  <span class="period-label" data-i18n="period.label">Kỳ phân tích:</span>
   <div class="period-pills">
-    <button class="period-pill" onclick="setPeriod('thang',this)">Tháng</button>
-    <button class="period-pill" onclick="setPeriod('quy',this)">Quý</button>
-    <button class="period-pill active" onclick="setPeriod('nam',this)">Năm ✓ (khuyến nghị)</button>
+    <button class="period-pill" id="pill-month"   onclick="setPeriod('thang',this)" data-i18n="period.month">Tháng</button>
+    <button class="period-pill" id="pill-quarter" onclick="setPeriod('quy',this)"   data-i18n="period.quarter">Quý</button>
+    <button class="period-pill active" id="pill-year" onclick="setPeriod('nam',this)" data-i18n="period.year">Năm ✓ (khuyến nghị)</button>
   </div>
-  <span class="period-note" id="period-note">Nhập tất cả số liệu doanh thu & chi phí theo năm. Tài sản/nợ nhập tại thời điểm hiện tại.</span>
+  <span class="period-note" id="period-note"></span>
 </div>
 
 <div class="stepper-wrap">
   <div class="stepper" id="stepper">
-    <div class="step-item active" id="step-dot-0" onclick="goToStep(0)"><div class="step-circle">1</div><div class="step-label">Thông tin</div></div>
-    <div class="step-item" id="step-dot-1" onclick="goToStep(1)"><div class="step-circle">2</div><div class="step-label">Doanh thu</div></div>
-    <div class="step-item" id="step-dot-2" onclick="goToStep(2)"><div class="step-circle">3</div><div class="step-label">Chi phí</div></div>
-    <div class="step-item" id="step-dot-3" onclick="goToStep(3)"><div class="step-circle">4</div><div class="step-label">Tài sản & Nợ</div></div>
-    <div class="step-item" id="step-dot-4" onclick="goToStep(4)"><div class="step-circle">5</div><div class="step-label">Kết quả</div></div>
+    <div class="step-item active" id="step-dot-0" onclick="goToStep(0)"><div class="step-circle">1</div><div class="step-label" data-i18n="steps.s0">Thông tin</div></div>
+    <div class="step-item" id="step-dot-1" onclick="goToStep(1)"><div class="step-circle">2</div><div class="step-label" data-i18n="steps.s1">Doanh thu</div></div>
+    <div class="step-item" id="step-dot-2" onclick="goToStep(2)"><div class="step-circle">3</div><div class="step-label" data-i18n="steps.s2">Chi phí</div></div>
+    <div class="step-item" id="step-dot-3" onclick="goToStep(3)"><div class="step-circle">4</div><div class="step-label" data-i18n="steps.s3">Tài sản & Nợ</div></div>
+    <div class="step-item" id="step-dot-4" onclick="goToStep(4)"><div class="step-circle">5</div><div class="step-label" data-i18n="steps.s4">Kết quả</div></div>
   </div>
 </div>
 
 <div class="main" id="main-content"></div>
 
+<!-- i18n must load before app scripts -->
+<script src="assets/js/locales/vi.js"></script>
+<script src="assets/js/locales/en.js"></script>
+<script src="assets/js/i18n.js"></script>
+
 <!-- External libs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 
-<!-- App scripts — load order matters (api → auth → charts → app) -->
+<!-- App scripts -->
 <script src="assets/js/api.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/charts.js"></script>
 <script src="assets/js/app.js"></script>
 
+<script>
+  /* Init language toggle state after DOM ready */
+  (function(){
+    const lang = localStorage.getItem('hkd_lang') || 'vi';
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    if (lang !== 'vi') i18n.setLang(lang);
+  })();
+</script>
 </body>
 </html>
