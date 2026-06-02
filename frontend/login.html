@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đăng nhập — Sức Khỏe Tài Chính HKD</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue-dark:   #0f2d4a;
+    --blue-mid:    #1a4f7a;
+    --blue-light:  #2979b0;
+    --accent:      #3b9ede;
+    --white:       #ffffff;
+    --gray-100:    #f5f7fa;
+    --gray-300:    #d0d9e3;
+    --gray-500:    #7a8ea3;
+    --gray-700:    #3d5168;
+    --err:         #e74c3c;
+    --radius:      10px;
+    --shadow:      0 8px 32px rgba(0,0,0,.18);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    height: 100dvh;
+    display: flex;
+    overflow: hidden;
+    background: var(--blue-dark);
+  }
+
+  /* ── Language toggle ──────────────────── */
+  .lang-toggle {
+    position: fixed;
+    top: 18px; right: 24px;
+    display: flex;
+    gap: 4px;
+    z-index: 100;
+  }
+  .lang-btn {
+    padding: 5px 13px;
+    border-radius: 6px;
+    border: 1.5px solid rgba(255,255,255,.35);
+    background: transparent;
+    color: rgba(255,255,255,.7);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+    letter-spacing: .5px;
+  }
+  .lang-btn.active {
+    background: rgba(255,255,255,.18);
+    color: var(--white);
+    border-color: rgba(255,255,255,.6);
+  }
+  .lang-btn:hover:not(.active) { background: rgba(255,255,255,.08); }
+
+  /* ── Left panel ───────────────────────── */
+  .left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 64px 56px;
+    background: linear-gradient(155deg, var(--blue-dark) 0%, var(--blue-mid) 60%, var(--blue-light) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .left::before {
+    content: '';
+    position: absolute;
+    width: 460px; height: 460px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.04);
+    top: -120px; right: -140px;
+  }
+  .left::after {
+    content: '';
+    position: absolute;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.03);
+    bottom: -80px; left: -60px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 48px;
+  }
+  .brand-icon {
+    width: 48px; height: 48px;
+    background: rgba(255,255,255,.15);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    border: 1.5px solid rgba(255,255,255,.2);
+  }
+  .brand-text-top { font-size: 12px; color: rgba(255,255,255,.6); letter-spacing: .8px; text-transform: uppercase; }
+  .brand-text-main { font-size: 17px; font-weight: 700; color: var(--white); }
+
+  .left-title {
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 800;
+    color: var(--white);
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+  .left-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,.65);
+    margin-bottom: 44px;
+    line-height: 1.6;
+  }
+
+  .feature-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: rgba(255,255,255,.85);
+    font-size: 15px;
+  }
+  .feature-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .left-footer {
+    margin-top: auto;
+    padding-top: 40px;
+    font-size: 12px;
+    color: rgba(255,255,255,.35);
+  }
+
+  /* ── Right panel ──────────────────────── */
+  .right {
+    width: 440px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-100);
+    padding: 40px 32px;
+  }
+
+  .card {
+    width: 100%;
+    background: var(--white);
+    border-radius: 16px;
+    padding: 36px 32px;
+    box-shadow: var(--shadow);
+  }
+
+  .card-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--blue-dark);
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .card-sub {
+    font-size: 13px;
+    color: var(--gray-500);
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    background: var(--gray-100);
+    border-radius: 8px;
+    padding: 3px;
+    margin-bottom: 24px;
+  }
+  .tab {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-500);
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .tab.active {
+    background: var(--white);
+    color: var(--blue-dark);
+    box-shadow: 0 1px 4px rgba(0,0,0,.1);
+  }
+
+  /* Form */
+  .form-group { margin-bottom: 14px; }
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 5px;
+    letter-spacing: .3px;
+    text-transform: uppercase;
+  }
+  .form-input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--gray-300);
+    border-radius: var(--radius);
+    font-size: 14px;
+    color: var(--blue-dark);
+    background: var(--white);
+    outline: none;
+    transition: border-color .2s;
+  }
+  .form-input:focus { border-color: var(--accent); }
+  .form-input::placeholder { color: var(--gray-300); }
+
+  .btn-submit {
+    width: 100%;
+    padding: 13px;
+    background: var(--blue-mid);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .2s;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-submit:hover { background: var(--blue-dark); }
+  .btn-submit:disabled { opacity: .6; cursor: not-allowed; }
+
+  .msg { min-height: 20px; margin: 8px 0 4px; font-size: 13px; }
+  .msg.err { color: var(--err); }
+  .msg.ok  { color: #27ae60; }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 18px 0 14px;
+    color: var(--gray-300);
+    font-size: 12px;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--gray-300);
+  }
+
+  .btn-offline {
+    width: 100%;
+    padding: 10px;
+    border: 1.5px solid var(--gray-300);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--gray-500);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .btn-offline:hover { border-color: var(--gray-500); color: var(--gray-700); }
+
+  .card-footer {
+    margin-top: 20px;
+    font-size: 11px;
+    color: var(--gray-300);
+    text-align: center;
+  }
+
+  /* ── Responsive ───────────────────────── */
+  @media (max-width: 768px) {
+    body { flex-direction: column; overflow: auto; }
+    .left { padding: 48px 28px 32px; flex: none; min-height: 260px; }
+    .right { width: 100%; padding: 24px 20px 40px; background: var(--gray-100); }
+    .lang-toggle { top: 14px; right: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Language toggle -->
+<div class="lang-toggle">
+  <button class="lang-btn active" id="btn-vi" onclick="setLang('vi')">VI</button>
+  <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+</div>
+
+<!-- Left branding panel -->
+<div class="left">
+  <div class="brand">
+    <div class="brand-icon">₫</div>
+    <div>
+      <div class="brand-text-top" data-i18n="brand_top">Hộ Kinh Doanh Việt Nam</div>
+      <div class="brand-text-main">HKD Financial Health</div>
+    </div>
+  </div>
+
+  <h1 class="left-title" data-i18n="left_title">Phân Tích Sức Khỏe<br>Tài Chính Hộ Kinh Doanh</h1>
+  <p class="left-sub" data-i18n="left_sub">Bộ công cụ phân tích tài chính chuyên sâu dành cho hộ kinh doanh — khung pháp lý 2026.</p>
+
+  <ul class="feature-list">
+    <li class="feature-item"><span class="feature-dot"></span><span data-i18n="f1">Phân tích 8 chỉ số tài chính quan trọng</span></li>
+    <li class="feature-item"><span class="feature-dot"></span><span data-i18n="f2">Biểu đồ radar & xu hướng theo kỳ</span></li>
+    <li class="feature-item"><span class="feature-dot"></span><span data-i18n="f3">Import Excel & HTKK XML tự động</span></li>
+    <li class="feature-item"><span class="feature-dot"></span><span data-i18n="f4">Benchmark theo ngành & vùng kinh tế</span></li>
+    <li class="feature-item"><span class="feature-dot"></span><span data-i18n="f5">Lưu lịch sử phân tích đa kỳ</span></li>
+  </ul>
+
+  <div class="left-footer">© HKD Financial Health 2026</div>
+</div>
+
+<!-- Right login panel -->
+<div class="right">
+  <div class="card">
+    <div class="card-title" data-i18n="card_title">Đăng nhập</div>
+    <div class="card-sub" data-i18n="card_sub">Hệ thống Phân Tích Tài Chính HKD</div>
+
+    <div class="tabs">
+      <button class="tab active" id="tab-login" onclick="switchTab('login')" data-i18n="tab_login">Đăng nhập</button>
+      <button class="tab" id="tab-register" onclick="switchTab('register')" data-i18n="tab_register">Đăng ký</button>
+    </div>
+
+    <!-- Login form -->
+    <div id="form-login">
+      <div class="form-group">
+        <label class="form-label" data-i18n="lbl_email">Email</label>
+        <input class="form-input" type="email" id="l-email" data-i18n-ph="ph_email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="lbl_pass">Mật khẩu</label>
+        <input class="form-input" type="password" id="l-pass" data-i18n-ph="ph_pass" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div class="msg" id="l-msg"></div>
+      <button class="btn-submit" id="l-btn" onclick="doLogin()">
+        <span>→</span><span data-i18n="btn_login">Đăng nhập</span>
+      </button>
+    </div>
+
+    <!-- Register form -->
+    <div id="form-register" style="display:none">
+      <div class="form-group">
+        <label class="form-label" data-i18n="lbl_name">Họ tên</label>
+        <input class="form-input" type="text" id="r-name" data-i18n-ph="ph_name" placeholder="Nguyễn Văn A">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="lbl_email">Email</label>
+        <input class="form-input" type="email" id="r-email" data-i18n-ph="ph_email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="lbl_pass_new">Mật khẩu</label>
+        <input class="form-input" type="password" id="r-pass" data-i18n-ph="ph_pass_new" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password">
+      </div>
+      <div class="msg" id="r-msg"></div>
+      <button class="btn-submit" id="r-btn" onclick="doRegister()">
+        <span>✓</span><span data-i18n="btn_register">Tạo tài khoản</span>
+      </button>
+    </div>
+
+    <div class="divider" data-i18n="or">hoặc</div>
+    <button class="btn-offline" onclick="goOffline()" data-i18n="btn_offline">Tiếp tục không đăng nhập (lưu local)</button>
+
+    <div class="card-footer" data-i18n="footer_note">Dành cho chủ hộ kinh doanh & kế toán</div>
+  </div>
+</div>
+
+<script src="assets/js/api.js"></script>
+<script>
+/* ── i18n ─────────────────────────────────────────── */
+const T = {
+  vi: {
+    brand_top:   'Hộ Kinh Doanh Việt Nam',
+    left_title:  'Phân Tích Sức Khỏe<br>Tài Chính Hộ Kinh Doanh',
+    left_sub:    'Bộ công cụ phân tích tài chính chuyên sâu dành cho hộ kinh doanh — khung pháp lý 2026.',
+    f1: 'Phân tích 8 chỉ số tài chính quan trọng',
+    f2: 'Biểu đồ radar & xu hướng theo kỳ',
+    f3: 'Import Excel & HTKK XML tự động',
+    f4: 'Benchmark theo ngành & vùng kinh tế',
+    f5: 'Lưu lịch sử phân tích đa kỳ',
+    card_title:  'Đăng nhập',
+    card_sub:    'Hệ thống Phân Tích Tài Chính HKD',
+    tab_login:   'Đăng nhập',
+    tab_register:'Đăng ký',
+    lbl_email:   'Email',
+    lbl_pass:    'Mật khẩu',
+    lbl_pass_new:'Mật khẩu',
+    lbl_name:    'Họ tên',
+    ph_email:    'you@example.com',
+    ph_pass:     '••••••••',
+    ph_pass_new: 'Tối thiểu 6 ký tự',
+    ph_name:     'Nguyễn Văn A',
+    btn_login:   'Đăng nhập',
+    btn_register:'Tạo tài khoản',
+    or:          'hoặc',
+    btn_offline: 'Tiếp tục không đăng nhập (lưu local)',
+    footer_note: 'Dành cho chủ hộ kinh doanh & kế toán',
+    loading:     'Đang xử lý...',
+    err_connect: 'Lỗi kết nối. Thử lại sau.',
+  },
+  en: {
+    brand_top:   'Vietnamese Household Business',
+    left_title:  'Financial Health Analysis<br>for Household Businesses',
+    left_sub:    'In-depth financial analysis toolkit for household businesses — 2026 legal framework.',
+    f1: 'Analyze 8 key financial indicators',
+    f2: 'Radar chart & multi-period trends',
+    f3: 'Auto import Excel & HTKK XML',
+    f4: 'Industry & regional benchmarks',
+    f5: 'Save multi-period analysis history',
+    card_title:  'Sign In',
+    card_sub:    'HKD Financial Analysis System',
+    tab_login:   'Sign In',
+    tab_register:'Sign Up',
+    lbl_email:   'Email',
+    lbl_pass:    'Password',
+    lbl_pass_new:'Password',
+    lbl_name:    'Full Name',
+    ph_email:    'you@example.com',
+    ph_pass:     '••••••••',
+    ph_pass_new: 'At least 6 characters',
+    ph_name:     'John Doe',
+    btn_login:   'Sign In',
+    btn_register:'Create Account',
+    or:          'or',
+    btn_offline: 'Continue without account (local only)',
+    footer_note: 'For household business owners & accountants',
+    loading:     'Processing...',
+    err_connect: 'Connection error. Please try again.',
+  }
+};
+
+let lang = localStorage.getItem('hkd_lang') || 'vi';
+
+function setLang(l) {
+  lang = l;
+  localStorage.setItem('hkd_lang', l);
+  document.getElementById('btn-vi').classList.toggle('active', l === 'vi');
+  document.getElementById('btn-en').classList.toggle('active', l === 'en');
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (T[l][key] !== undefined) el.innerHTML = T[l][key];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.getAttribute('data-i18n-ph');
+    if (T[l][key] !== undefined) el.placeholder = T[l][key];
+  });
+  document.title = l === 'vi'
+    ? 'Đăng nhập — Sức Khỏe Tài Chính HKD'
+    : 'Sign In — HKD Financial Health';
+}
+
+/* ── Tab switch ───────────────────────────────────── */
+function switchTab(tab) {
+  document.getElementById('form-login').style.display    = tab === 'login' ? 'block' : 'none';
+  document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+}
+
+/* ── Auth actions ─────────────────────────────────── */
+async function doLogin() {
+  const email = document.getElementById('l-email').value.trim();
+  const pass  = document.getElementById('l-pass').value;
+  const msg   = document.getElementById('l-msg');
+  const btn   = document.getElementById('l-btn');
+  msg.className = 'msg';
+  msg.textContent = T[lang].loading;
+  btn.disabled = true;
+  try {
+    const res  = await fetch(API_BASE + '/api/auth/login', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({email, password: pass})
+    });
+    const data = await res.json();
+    if (!res.ok) { msg.className = 'msg err'; msg.textContent = data.error || data.message; btn.disabled = false; return; }
+    saveAuth(data.user, data.accessToken, data.refreshToken);
+    msg.className = 'msg ok';
+    msg.textContent = '✓';
+    window.location.href = 'index.html';
+  } catch {
+    msg.className = 'msg err'; msg.textContent = T[lang].err_connect; btn.disabled = false;
+  }
+}
+
+async function doRegister() {
+  const name  = document.getElementById('r-name').value.trim();
+  const email = document.getElementById('r-email').value.trim();
+  const pass  = document.getElementById('r-pass').value;
+  const msg   = document.getElementById('r-msg');
+  const btn   = document.getElementById('r-btn');
+  msg.className = 'msg';
+  msg.textContent = T[lang].loading;
+  btn.disabled = true;
+  try {
+    const res  = await fetch(API_BASE + '/api/auth/register', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({email, password: pass, full_name: name})
+    });
+    const data = await res.json();
+    if (!res.ok) { msg.className = 'msg err'; msg.textContent = data.error || data.message; btn.disabled = false; return; }
+    saveAuth(data.user, data.accessToken, data.refreshToken);
+    window.location.href = 'index.html';
+  } catch {
+    msg.className = 'msg err'; msg.textContent = T[lang].err_connect; btn.disabled = false;
+  }
+}
+
+function goOffline() {
+  window.location.href = 'index.html';
+}
+
+/* ── Enter key support ────────────────────────────── */
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const loginVisible = document.getElementById('form-login').style.display !== 'none';
+  if (loginVisible) doLogin(); else doRegister();
+});
+
+/* ── Init ─────────────────────────────────────────── */
+if (isLoggedIn()) window.location.href = 'index.html';
+setLang(lang);
+</script>
+</body>
+</html>

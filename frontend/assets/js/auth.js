@@ -92,8 +92,7 @@ async function doLogout() {
     await apiFetch('/api/auth/logout', {method:'POST', body:JSON.stringify({refreshToken:authState.refreshToken})});
   } catch {}
   clearAuth();
-  updateHeaderUserChip();
-  renderCurrentStep();
+  window.location.href = 'login.html';
 }
 
 function updateHeaderUserChip() {
@@ -105,7 +104,7 @@ function updateHeaderUserChip() {
       <span style="font-size:10px;opacity:.7">Đăng xuất</span>
     </div>`;
   } else {
-    existing.innerHTML = `<button class="btn btn-secondary" onclick="showAuthModal()" style="font-size:12px;padding:5px 14px">Đăng nhập</button>`;
+    existing.innerHTML = `<a href="login.html" class="btn btn-secondary" style="font-size:12px;padding:5px 14px;text-decoration:none">Đăng nhập</a>`;
   }
 }
 
