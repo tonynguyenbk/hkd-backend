@@ -281,7 +281,7 @@ function calculate() {
   const tongTS = tsNH+tscd;
 
   // FIX #1: tax threshold uses annualized DT
-  const ngưỡngChịuThuế = 500; // 2026: trên 500tr phải nộp
+  const ngưỡngChịuThuế = 1000; // NĐ 141/2026/NĐ-CP: trên 1 tỷ/năm phải nộp
   const thueGTGT_expect = dtNam>ngưỡngChịuThuế ? dtNam*ind.gtgt/100 : 0;
   const thueTNCN_expect = dtNam>ngưỡngChịuThuế ? dtNam*ind.tncn/100 : 0;
   const tongThue_expect = thueGTGT_expect+thueTNCN_expect;
@@ -742,9 +742,9 @@ function renderStep4(res) {
       <table class="tax-table"><thead><tr><th>${t('tax.th_type')}</th><th>${t('tax.th_rate')}</th><th>${t('tax.th_estimate')}</th></tr></thead>
       <tbody>
         <tr><td>${t('tax.gtgt')}</td><td class="tax-highlight">${ind.gtgt}%</td>
-          <td class="tax-highlight">${summary.dtNam>500?'₫'+fmt(summary.dtNam*ind.gtgt/100)+'M':t('tax.exempt')}</td></tr>
+          <td class="tax-highlight">${summary.dtNam>1000?'₫'+fmt(summary.dtNam*ind.gtgt/100)+'M':t('tax.exempt')}</td></tr>
         <tr><td>${t('tax.tncn')}</td><td class="tax-highlight">${ind.tncn}%</td>
-          <td class="tax-highlight">${summary.dtNam>500?'₫'+fmt(summary.dtNam*ind.tncn/100)+'M':t('tax.exempt')}</td></tr>
+          <td class="tax-highlight">${summary.dtNam>1000?'₫'+fmt(summary.dtNam*ind.tncn/100)+'M':t('tax.exempt')}</td></tr>
         <tr style="border-top:1px solid var(--border)"><td><strong>${t('tax.total')}</strong></td>
           <td class="tax-highlight">${(ind.gtgt+ind.tncn).toFixed(1)}%</td>
           <td class="tax-highlight" style="color:var(--gold)"><strong>₫${fmt(summary.tongThue_expect)}M</strong></td></tr>
