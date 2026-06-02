@@ -53,7 +53,7 @@ function annualize(v) { return (v||0) * PERIOD_MULT[period]; }
 const TEST_CASES = [
   {
     id:'tapHoa', icon:'🛒', name:'Tạp hóa Thành Phát',
-    sub:'Bán lẻ · Bình Thạnh, HCM · 8 năm', expected:'warn',
+    sub:'Bán lẻ · Bình Thạnh, HCM · 8 năm', sub_en:'Retail · Binh Thanh, HCM · 8 yrs', expected:'warn',
     note:'DT năm = 480tr, nợ ngân hàng Tết 95tr, chưa nộp thuế (DT<500tr, chỉ cần khai)',
     data:{
       info:{name:'HKD Thành Phát',industry:'thuong_mai',size:'sieu_nho',duration:'tren_5',province:'TP.HCM',region:'hn_hcm'},
@@ -64,7 +64,7 @@ const TEST_CASES = [
   },
   {
     id:'bunBo', icon:'🍜', name:'Quán bún bò Mệ Tám',
-    sub:'F&B · Hoàng Mai, HN · 3 năm', expected:'safe',
+    sub:'F&B · Hoàng Mai, HN · 3 năm', sub_en:'F&B · Hoang Mai, HN · 3 yrs', expected:'safe',
     note:'DT năm = 720tr, thuê MB 144tr/năm=20%DT — điểm yếu chính',
     data:{
       info:{name:'HKD Mệ Tám',industry:'dich_vu',size:'nho',duration:'1_3',province:'Hà Nội',region:'hn_hcm'},
@@ -75,7 +75,7 @@ const TEST_CASES = [
   },
   {
     id:'suaXe', icon:'🔧', name:'Sửa xe Hùng Moto',
-    sub:'Dịch vụ · Củ Chi, HCM · 12 năm', expected:'safe',
+    sub:'Dịch vụ · Củ Chi, HCM · 12 năm', sub_en:'Services · Cu Chi, HCM · 12 yrs', expected:'safe',
     note:'Nhà riêng, không thuê MB, D/E=0.11, mô hình rủi ro thấp nhất',
     data:{
       info:{name:'HKD Hùng Moto',industry:'dich_vu',size:'sieu_nho',duration:'tren_5',province:'TP.HCM',region:'tinh_nho'},
@@ -86,7 +86,7 @@ const TEST_CASES = [
   },
   {
     id:'may', icon:'🧵', name:'Xưởng may Thanh Loan',
-    sub:'Sản xuất · Đồng Nai · 5 năm', expected:'danger',
+    sub:'Sản xuất · Đồng Nai · 5 năm', sub_en:'Manufacturing · Dong Nai · 5 yrs', expected:'danger',
     note:'D/E=3.58, thanh khoản 0.81, phải thu 90tr chậm 60–90 ngày, nợ thuế 17tr',
     data:{
       info:{name:'HKD Thanh Loan',industry:'san_xuat',size:'nho',duration:'3_5',province:'Đồng Nai',region:'tinh_lon'},
@@ -97,7 +97,7 @@ const TEST_CASES = [
   },
   {
     id:'nhaTro', icon:'🏠', name:'Nhà trọ Bác Năm',
-    sub:'Lưu trú · Thủ Đức, HCM · 10 năm', expected:'safe',
+    sub:'Lưu trú · Thủ Đức, HCM · 10 năm', sub_en:'Lodging · Thu Duc, HCM · 10 yrs', expected:'safe',
     note:'Đất nhà riêng, không thuê MB, thu tiền mặt hàng tháng, dòng tiền ổn định',
     data:{
       info:{name:'Nhà trọ Bác Năm',industry:'dich_vu',size:'sieu_nho',duration:'tren_5',province:'TP.HCM',region:'hn_hcm'},
@@ -108,7 +108,7 @@ const TEST_CASES = [
   },
   {
     id:'barber', icon:'✂️', name:'Barber Minh Tuấn',
-    sub:'Làm đẹp · Quận 3, HCM · 2 năm', expected:'danger',
+    sub:'Làm đẹp · Quận 3, HCM · 2 năm', sub_en:'Beauty · District 3, HCM · 2 yrs', expected:'danger',
     note:'Thuê MB 300tr/năm = 55.6% DT — đang lỗ 90tr/năm, cần xử lý ngay',
     data:{
       info:{name:'Barber Minh Tuấn',industry:'dich_vu',size:'sieu_nho',duration:'1_3',province:'TP.HCM',region:'hn_hcm'},
@@ -119,7 +119,7 @@ const TEST_CASES = [
   },
   {
     id:'tmdt', icon:'📦', name:'Thảo Cosmetic (Online)',
-    sub:'TMĐT · Hà Đông, HN · 4 năm', expected:'safe',
+    sub:'TMĐT · Hà Đông, HN · 4 năm', sub_en:'E-commerce · Ha Dong, HN · 4 yrs', expected:'safe',
     note:'DT 1.2 tỷ/năm — kê khai tháng, hóa đơn điện tử bắt buộc (NĐ70/2025)',
     data:{
       info:{name:'HKD Thảo Cosmetic',industry:'thuong_mai',size:'nho',duration:'3_5',province:'Hà Nội',region:'hn_hcm'},
@@ -157,7 +157,7 @@ function renderTestCasePanel() {
           <div class="tc-chip-icon">${c.icon}</div>
           <div>
             <div class="tc-chip-name">${c.name}</div>
-            <div class="tc-chip-sub">${c.sub}</div>
+            <div class="tc-chip-sub">${i18n.lang==='en'&&c.sub_en?c.sub_en:c.sub}</div>
             <span class="tc-chip-badge b-${c.expected}">${badges[c.expected]}</span>
           </div>
         </div>`).join('')}
@@ -427,50 +427,48 @@ function renderStep1() {
 
   <div class="concept-banner">
     <span class="ci">📌</span>
-    <span><strong>Giá vốn hàng bán (COGS)</strong> = chi phí mua hàng / nguyên vật liệu TRỰC TIẾP tạo ra sản phẩm/dịch vụ.
-    Không bao gồm tiền thuê, lương nhân viên, điện nước (những khoản đó nhập ở Bước 3).<br>
-    <em>Ví dụ quán bún: giá vốn = tiền thịt + bún + rau. Ví dụ tạp hóa: giá vốn = tiền nhập hàng.</em></span>
+    <span>${t('step1.cogs_banner')}</span>
   </div>
 
   <div class="card">
-    <div class="card-title">Kết quả kinh doanh (kỳ: ${pUnit})</div>
+    <div class="card-title">${t('step1.card_title',{period:pUnit})}</div>
     <div class="field-grid">
       <div class="field">
-        <label>Tổng doanh thu <span class="req">*</span></label>
+        <label>${t('step1.lbl_revenue')} <span class="req">*</span></label>
         <div class="input-wrap has-prefix">
           <span class="input-prefix">₫</span>
           <input type="number" min="0" value="${data.revenue.tongDoanhThu||''}"
             oninput="data.revenue.tongDoanhThu=+this.value;updateRevCalc()" class="${lc}">
           <span class="period-unit">${pUnit}</span>
         </div>
-        <div class="field-hint">Toàn bộ tiền thu từ bán hàng / dịch vụ trong ${pUnit}</div>
-        <div class="field-example">Ví dụ kỳ năm: tạp hóa bình thường = 30–60 tr/tháng → 360–720 tr/năm</div>
+        <div class="field-hint">${t('step1.hint_revenue',{period:pUnit})}</div>
+        <div class="field-example">${t('step1.eg_revenue')}</div>
       </div>
       <div class="field">
-        <label>Giá vốn hàng bán <span class="req">*</span></label>
+        <label>${t('step1.lbl_cogs')} <span class="req">*</span></label>
         <div class="input-wrap has-prefix">
           <span class="input-prefix">₫</span>
           <input type="number" min="0" value="${data.revenue.giaVon||''}"
             oninput="data.revenue.giaVon=+this.value;updateRevCalc()" class="${lc}">
           <span class="period-unit">${pUnit}</span>
         </div>
-        <div class="field-hint">Chi phí hàng hóa / nguyên liệu trực tiếp trong ${pUnit}</div>
-        <div class="field-example">Dịch vụ thuần (sửa xe, tóc, trọ): có thể để 0 hoặc rất nhỏ</div>
+        <div class="field-hint">${t('step1.hint_cogs',{period:pUnit})}</div>
+        <div class="field-example">${t('step1.eg_cogs')}</div>
       </div>
       <div class="field">
-        <label>Thu nhập khác</label>
+        <label>${t('step1.lbl_other')}</label>
         <div class="input-wrap has-prefix">
           <span class="input-prefix">₫</span>
           <input type="number" min="0" value="${data.revenue.thuNhapKhac||''}"
             oninput="data.revenue.thuNhapKhac=+this.value;updateRevCalc()" class="${lc}">
           <span class="period-unit">${pUnit}</span>
         </div>
-        <div class="field-hint">Thanh lý tài sản, thu nhập phụ không liên quan hoạt động chính</div>
+        <div class="field-hint">${t('step1.hint_other')}</div>
       </div>
       <div class="field">
-        <label>Lợi nhuận gộp (tính tự động)</label>
+        <label>${t('step1.lbl_gross')}</label>
         <div class="computed" id="calc-ln-gop">—</div>
-        <div class="field-hint">= Doanh thu − Giá vốn. Mức kỳ vọng ngành <strong>${ind.label}: ${ind.marginBench}–${ind.marginBench+10}%</strong></div>
+        <div class="field-hint">${t('step1.hint_gross',{industry:ind.label,bench:ind.marginBench+'–'+(ind.marginBench+10)})}</div>
       </div>
     </div>
   </div>
@@ -494,55 +492,54 @@ function renderStep2() {
 
   <div class="concept-banner">
     <span class="ci">📌</span>
-    <span><strong>Chi phí hoạt động</strong> là các khoản <em>phát sinh trong kỳ</em> (income statement). Khác với <strong>nợ vay</strong> là <em>số dư còn lại tại thời điểm</em> (balance sheet) — sẽ nhập riêng ở Bước 4.<br>
-    Thuế nhập ở đây là <em>tổng thuế đã nộp/trích lập trong ${pUnit} này</em> (không phải từng lần).</span>
+    <span>${t('step2.banner',{period:pUnit})}</span>
   </div>
 
   <div class="card">
-    <div class="card-title">Chi phí hoạt động trong ${pUnit}</div>
+    <div class="card-title">${t('step2.card_title',{period:pUnit})}</div>
     <div class="field-grid">
       <div class="field">
-        <label>Thuê mặt bằng / Địa điểm</label>
+        <label>${t('step2.lbl_rent')}</label>
         <div class="input-wrap has-prefix">
           <span class="input-prefix">₫</span>
           <input type="number" min="0" value="${data.expenses.thueMatBang||''}"
             oninput="data.expenses.thueMatBang=+this.value" class="${lc}">
           <span class="period-unit">${pUnit}</span>
         </div>
-        <div class="field-hint">Tiền thuê mặt bằng thực tế thanh toán trong ${pUnit}. Nhà riêng = 0.</div>
-        <div class="field-example">VD năm: 3 triệu/tháng → nhập 36 tr/năm</div>
+        <div class="field-hint">${t('step2.hint_rent',{period:pUnit})}</div>
+        <div class="field-example">${t('step2.eg_rent')}</div>
       </div>
       <div class="field">
-        <label>Chi phí nhân công / Lương</label>
+        <label>${t('step2.lbl_labor')}</label>
         <div class="input-wrap has-prefix">
           <span class="input-prefix">₫</span>
           <input type="number" min="0" value="${data.expenses.nhanCong||''}"
             oninput="data.expenses.nhanCong=+this.value" class="${lc}">
           <span class="period-unit">${pUnit}</span>
         </div>
-        <div class="field-hint">Tổng lương thực trả cho nhân viên (không bao gồm thu nhập chủ hộ)</div>
-        <div class="field-example">Lương tối thiểu Vùng I 2025: 4.96 tr/tháng (NĐ 74/2024)</div>
+        <div class="field-hint">${t('step2.hint_labor')}</div>
+        <div class="field-example">${t('step2.eg_labor')}</div>
       </div>
       <div class="field">
-        <label>Chi phí khác (điện, nước, tiếp thị...)</label>
+        <label>${t('step2.lbl_other')}</label>
         <div class="input-wrap has-prefix">
           <span class="input-prefix">₫</span>
           <input type="number" min="0" value="${data.expenses.chiPhiKhac||''}"
             oninput="data.expenses.chiPhiKhac=+this.value" class="${lc}">
           <span class="period-unit">${pUnit}</span>
         </div>
-        <div class="field-hint">Điện nước, bao bì, ship, quảng cáo, bảo trì, khấu hao...</div>
+        <div class="field-hint">${t('step2.hint_other')}</div>
       </div>
       <div class="field">
-        <label>Thuế GTGT + TNCN đã nộp/trích lập</label>
+        <label>${t('step2.lbl_tax')}</label>
         <div class="input-wrap has-prefix">
           <span class="input-prefix">₫</span>
           <input type="number" min="0" value="${data.expenses.thueNopTrongKy||''}"
             oninput="data.expenses.thueNopTrongKy=+this.value" class="${lc}">
           <span class="period-unit">${pUnit}</span>
         </div>
-        <div class="field-hint">Tổng thuế kê khai trong <strong>${pUnit}</strong> này (GTGT + TNCN). DT &lt; 500tr/năm → nhập 0.</div>
-        <div class="field-example">Hệ thống tự so sánh với <em>dự kiến cả năm</em> để tính chỉ số #9</div>
+        <div class="field-hint">${t('step2.hint_tax',{period:pUnit})}</div>
+        <div class="field-example">${t('step2.eg_tax')}</div>
       </div>
     </div>
   </div>
@@ -564,107 +561,104 @@ function renderStep3() {
 
   <div class="concept-banner">
     <span class="ci">📌</span>
-    <span><strong>Bảng cân đối</strong> phản ánh <em>trạng thái tại một thời điểm</em>, khác với báo cáo thu chi phản ánh <em>dòng tiền trong kỳ</em>.<br>
-    <strong>Nợ ngắn hạn</strong> = tổng DƯ NỢ còn lại phải trả trong 12 tháng tới (không phải tiền trả nợ tháng này).<br>
-    Ví dụ: vay 100tr trả dần, đã trả 30tr → nợ ngắn hạn = 70tr.</span>
+    <span>${t('step3.banner')}</span>
   </div>
 
   <div class="card">
-    <div class="card-title">Tài sản ngắn hạn</div>
+    <div class="card-title">${t('step3.card_current')}</div>
     <div class="field-grid c3">
       <div class="field">
-        <label>Tiền mặt & Tiền gửi NH</label>
+        <label>${t('step3.lbl_cash')}</label>
         <div class="input-wrap has-prefix">
           <span class="input-prefix">₫</span>
           <input type="number" min="0" value="${data.assets.tienMat||''}"
             oninput="data.assets.tienMat=+this.value" class="${lc}">
-          <span class="input-suffix">triệu</span>
+          <span class="input-suffix">${t('step3.unit')}</span>
         </div>
-        <div class="field-hint">Tiền trong két + tài khoản ngân hàng hiện tại</div>
+        <div class="field-hint">${t('step3.hint_cash')}</div>
       </div>
       <div class="field">
-        <label>Hàng tồn kho</label>
+        <label>${t('step3.lbl_inv')}</label>
         <div class="input-wrap has-prefix">
           <span class="input-prefix">₫</span>
           <input type="number" min="0" value="${data.assets.hangTonKho||''}"
             oninput="data.assets.hangTonKho=+this.value" class="${lc}">
-          <span class="input-suffix">triệu</span>
+          <span class="input-suffix">${t('step3.unit')}</span>
         </div>
-        <div class="field-hint">Giá trị hàng hóa, nguyên liệu tồn kho hiện tại. Dịch vụ = 0.</div>
+        <div class="field-hint">${t('step3.hint_inv')}</div>
       </div>
       <div class="field">
-        <label>Phải thu khách hàng</label>
+        <label>${t('step3.lbl_recv')}</label>
         <div class="input-wrap has-prefix">
           <span class="input-prefix">₫</span>
           <input type="number" min="0" value="${data.assets.phaiThu||''}"
             oninput="data.assets.phaiThu=+this.value" class="${lc}">
-          <span class="input-suffix">triệu</span>
+          <span class="input-suffix">${t('step3.unit')}</span>
         </div>
-        <div class="field-hint">Tiền khách hàng còn nợ chưa thanh toán. Tiền mặt trực tiếp = 0.</div>
+        <div class="field-hint">${t('step3.hint_recv')}</div>
       </div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title">Tài sản dài hạn & Vốn</div>
+    <div class="card-title">${t('step3.card_fixed')}</div>
     <div class="field-grid">
       <div class="field">
-        <label>Tài sản cố định (TSCD)</label>
+        <label>${t('step3.lbl_fa')}</label>
         <div class="input-wrap has-prefix">
           <span class="input-prefix">₫</span>
           <input type="number" min="0" value="${data.assets.taiSanCoDinh||''}"
             oninput="data.assets.taiSanCoDinh=+this.value" class="${lc}">
-          <span class="input-suffix">triệu</span>
+          <span class="input-suffix">${t('step3.unit')}</span>
         </div>
-        <div class="field-hint">Máy móc, xe, thiết bị — giá trị còn lại sau khấu hao (TT 45/2013)</div>
+        <div class="field-hint">${t('step3.hint_fa')}</div>
       </div>
       <div class="field">
-        <label>Vốn chủ sở hữu <span class="req">*</span></label>
+        <label>${t('step3.lbl_equity')} <span class="req">*</span></label>
         <div class="input-wrap has-prefix">
           <span class="input-prefix">₫</span>
           <input type="number" min="0" value="${data.assets.vonChuSoHuu||''}"
             oninput="data.assets.vonChuSoHuu=+this.value" class="${lc}">
-          <span class="input-suffix">triệu</span>
+          <span class="input-suffix">${t('step3.unit')}</span>
         </div>
-        <div class="field-hint">Vốn bỏ ra ban đầu + lợi nhuận tích lũy − lỗ lũy kế</div>
+        <div class="field-hint">${t('step3.hint_equity')}</div>
       </div>
     </div>
   </div>
 
-  <!-- FIX #2: Nợ trong bảng cân đối -->
   <div class="card">
-    <div class="card-title">Nợ phải trả (số dư hiện tại)</div>
+    <div class="card-title">${t('step3.card_debt')}</div>
     <div class="concept-banner" style="margin-bottom:1rem">
       <span class="ci">⚠️</span>
       <span>${t('step3.debt_banner',{period:pLabel()})}</span>
     </div>
     <div class="field-grid">
       <div class="field">
-        <label>Nợ ngắn hạn (dưới 12 tháng)</label>
+        <label>${t('step3.lbl_st_debt')}</label>
         <div class="input-wrap has-prefix">
           <span class="input-prefix">₫</span>
           <input type="number" min="0" value="${data.assets.noNganHan||''}"
             oninput="data.assets.noNganHan=+this.value" class="${lc}">
-          <span class="input-suffix">triệu</span>
+          <span class="input-suffix">${t('step3.unit')}</span>
         </div>
-        <div class="field-hint">Tổng dư nợ vay NH + nợ nhà cung cấp chưa trả phải tất toán trong 12 tháng</div>
-        <div class="field-example">VD: vay 100tr còn 70tr dư nợ → nhập 70</div>
+        <div class="field-hint">${t('step3.hint_st_debt')}</div>
+        <div class="field-example">${t('step3.eg_st_debt')}</div>
       </div>
       <div class="field">
-        <label>Nợ dài hạn (trên 12 tháng)</label>
+        <label>${t('step3.lbl_lt_debt')}</label>
         <div class="input-wrap has-prefix">
           <span class="input-prefix">₫</span>
           <input type="number" min="0" value="${data.assets.noDaiHan||''}"
             oninput="data.assets.noDaiHan=+this.value" class="${lc}">
-          <span class="input-suffix">triệu</span>
+          <span class="input-suffix">${t('step3.unit')}</span>
         </div>
-        <div class="field-hint">Dư nợ vay trung dài hạn ngân hàng / đối tác còn lại trên 12 tháng</div>
+        <div class="field-hint">${t('step3.hint_lt_debt')}</div>
       </div>
     </div>
   </div>
 
   <div class="btn-row">
-    <button class="btn btn-secondary" onclick="prevStep()">← Quay lại</button>
+    <button class="btn btn-secondary" onclick="prevStep()">${t('btn.back')}</button>
     <button class="btn btn-primary" onclick="runAnalysis()">${t('btn.analyze')}</button>
   </div></div>`;
 }
