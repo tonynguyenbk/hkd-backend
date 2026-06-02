@@ -13,7 +13,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 .h-logo{width:40px;height:40px;background:var(--gold);border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:#0A1520;flex-shrink:0;}
 .h-title{font-size:17px;font-weight:600;}
 .h-sub{font-size:13px;color:var(--muted);}
-.h-badge{margin-left:auto;background:var(--gold-dim);border:1px solid var(--border);border-radius:5px;padding:3px 9px;font-size:12px;color:var(--gold);}
+#header-user{margin-left:auto;}
 
 /* ── PERIOD BAR ── */
 .period-bar{background:var(--card2);border-bottom:1px solid var(--border);padding:10px 1.5rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
