@@ -9,7 +9,7 @@ window.translations['en'] = {
     lang_en: 'EN',
   },
   header: {
-    title: 'Household Business Financial Health v2',
+    title: 'Household Business Financial Health',
     sub:   'Financial indicators · 2026 Legal framework · AI Advisor',
     login: 'Sign In',
     logout: 'Sign Out',
