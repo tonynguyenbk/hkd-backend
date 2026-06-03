@@ -10,10 +10,12 @@
 body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:17px;line-height:1.75;min-height:100vh;}
 
 /* ── HEADER ── */
-.header{background:linear-gradient(135deg,#0A1520,#162233);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
-.h-logo{width:40px;height:40px;background:var(--gold);border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:#0A1520;flex-shrink:0;}
-.h-title{font-size:18px;font-weight:600;}
-.h-sub{font-size:14px;color:var(--muted);}
+.header{background:#0A1520;border-bottom:1px solid rgba(255,255,255,.07);padding:.85rem 2rem;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;}
+.h-logo{width:36px;height:36px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;color:#0A1520;flex-shrink:0;letter-spacing:0;}
+.h-brand{display:flex;align-items:center;gap:10px;}
+.h-name{font-size:17px;font-weight:800;color:var(--gold);letter-spacing:.5px;}
+.h-sep{width:1px;height:18px;background:rgba(255,255,255,.15);display:block;}
+.h-title{font-size:15px;font-weight:500;color:var(--muted);}
 #header-user{margin-left:auto;}
 
 /* ── PERIOD BAR ── */

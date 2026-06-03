@@ -9,6 +9,7 @@ window.translations['vi'] = {
     lang_en: 'EN',
   },
   header: {
+    name:  'HKD',
     title: 'Sức Khỏe Tài Chính Hộ Kinh Doanh',
     sub:   'Bộ chỉ số tài chính · Khung pháp lý 2026 · Tư vấn AI',
     login: 'Đăng nhập',

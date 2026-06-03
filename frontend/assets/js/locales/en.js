@@ -9,6 +9,7 @@ window.translations['en'] = {
     lang_en: 'EN',
   },
   header: {
+    name:  'HKD',
     title: 'Household Business Financial Health',
     sub:   'Financial indicators · 2026 Legal framework · AI Advisor',
     login: 'Sign In',
