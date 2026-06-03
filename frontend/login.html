@@ -8,52 +8,43 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --blue-dark:   #0f2d4a;
-    --blue-mid:    #1a4f7a;
-    --blue-light:  #2979b0;
-    --accent:      #3b9ede;
-    --white:       #ffffff;
-    --gray-100:    #f5f7fa;
-    --gray-300:    #d0d9e3;
-    --gray-500:    #7a8ea3;
-    --gray-700:    #3d5168;
-    --err:         #e74c3c;
-    --radius:      10px;
-    --shadow:      0 8px 32px rgba(0,0,0,.18);
+    --bg:       #0D1B2A;
+    --card:     #162233;
+    --card2:    #1C2D41;
+    --border:   rgba(212,168,67,.2);
+    --gold:     #D4A843;
+    --gold-l:   #E8C46A;
+    --gold-dim: rgba(212,168,67,.12);
+    --text:     #F1F5F9;
+    --muted:    #94A3B8;
+    --hint:     #64748B;
+    --safe:     #22C55E;
+    --err:      #EF4444;
+    --radius:   10px;
   }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    height: 100dvh;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100dvh;
     display: flex;
-    overflow: hidden;
-    background: var(--blue-dark);
+    background: var(--bg);
+    color: var(--text);
   }
 
   /* ── Language toggle ──────────────────── */
-  .lang-toggle {
-    display: flex;
-    gap: 4px;
-    margin-left: auto;
-  }
+  .lang-toggle { display: flex; gap: 4px; margin-left: auto; }
   .lang-btn {
-    padding: 5px 13px;
+    padding: 5px 12px;
     border-radius: 6px;
-    border: 1.5px solid rgba(255,255,255,.35);
+    border: 1px solid rgba(212,168,67,.3);
     background: transparent;
-    color: rgba(255,255,255,.7);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all .2s;
-    letter-spacing: .5px;
+    color: var(--muted);
+    font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: all .2s; letter-spacing: .4px;
+    font-family: inherit;
   }
-  .lang-btn.active {
-    background: rgba(255,255,255,.18);
-    color: var(--white);
-    border-color: rgba(255,255,255,.6);
-  }
-  .lang-btn:hover:not(.active) { background: rgba(255,255,255,.08); }
+  .lang-btn.active  { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
+  .lang-btn:hover:not(.active) { border-color: var(--gold); color: var(--gold-l); }
 
   /* ── Left panel ───────────────────────── */
   .left {
@@ -61,233 +52,218 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 64px 56px;
-    background: linear-gradient(155deg, var(--blue-dark) 0%, var(--blue-mid) 60%, var(--blue-light) 100%);
+    padding: 60px 64px;
+    background: linear-gradient(145deg, #0A1520 0%, #0D1B2A 50%, #112030 100%);
     position: relative;
     overflow: hidden;
+    border-right: 1px solid var(--border);
   }
+  /* Subtle gold glow top-right */
   .left::before {
     content: '';
     position: absolute;
-    width: 460px; height: 460px;
+    width: 500px; height: 500px;
     border-radius: 50%;
-    background: rgba(255,255,255,.04);
-    top: -120px; right: -140px;
+    background: radial-gradient(circle, rgba(212,168,67,.06) 0%, transparent 70%);
+    top: -150px; right: -150px;
     pointer-events: none;
   }
+  /* Subtle accent bottom-left */
   .left::after {
     content: '';
     position: absolute;
-    width: 280px; height: 280px;
+    width: 320px; height: 320px;
     border-radius: 50%;
-    background: rgba(255,255,255,.03);
-    bottom: -80px; left: -60px;
+    background: radial-gradient(circle, rgba(37,99,235,.05) 0%, transparent 70%);
+    bottom: -100px; left: -80px;
     pointer-events: none;
   }
 
+  /* Brand row — matches app header */
   .brand {
     display: flex;
     align-items: center;
-    gap: 14px;
-    margin-bottom: 48px;
+    gap: 12px;
+    margin-bottom: 56px;
     width: 100%;
   }
-  .brand-icon {
-    width: 48px; height: 48px;
-    background: rgba(255,255,255,.15);
-    border-radius: 12px;
+  .brand-logo {
+    width: 40px; height: 40px;
+    background: var(--gold);
+    border-radius: 9px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 22px;
-    border: 1.5px solid rgba(255,255,255,.2);
+    font-weight: 800; font-size: 18px;
+    color: #0A1520; flex-shrink: 0;
   }
-  .brand-text-top { font-size: 12px; color: rgba(255,255,255,.6); letter-spacing: .8px; text-transform: uppercase; }
-  .brand-text-main { font-size: 17px; font-weight: 700; color: var(--white); }
+  .brand-name { font-size: 17px; font-weight: 800; color: var(--gold); letter-spacing: .5px; }
+  .brand-sep  { width: 1px; height: 18px; background: var(--border); display: block; }
+  .brand-sub  { font-size: 14px; font-weight: 500; color: var(--muted); }
 
-  .left-title {
-    font-size: clamp(22px, 3vw, 30px);
+  /* Hero text */
+  .hero-title {
+    font-size: clamp(28px, 3.2vw, 38px);
     font-weight: 800;
-    color: var(--white);
-    line-height: 1.3;
-    margin-bottom: 12px;
+    color: var(--text);
+    line-height: 1.25;
+    margin-bottom: 16px;
+    letter-spacing: -.5px;
   }
-  .left-sub {
-    font-size: 15px;
-    color: rgba(255,255,255,.65);
-    margin-bottom: 44px;
-    line-height: 1.6;
+  .hero-title span { color: var(--gold-l); }
+  .hero-sub {
+    font-size: 16px;
+    color: var(--muted);
+    margin-bottom: 48px;
+    line-height: 1.7;
+    max-width: 460px;
   }
 
-  .feature-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+  /* Feature list */
+  .feature-list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
   .feature-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: rgba(255,255,255,.85);
-    font-size: 15px;
+    display: flex; align-items: center; gap: 13px;
+    font-size: 15px; color: var(--text);
   }
   .feature-dot {
-    width: 8px; height: 8px;
+    width: 7px; height: 7px;
     border-radius: 50%;
-    background: var(--accent);
+    background: var(--gold);
     flex-shrink: 0;
+    box-shadow: 0 0 6px rgba(212,168,67,.5);
   }
 
   .left-footer {
     margin-top: auto;
-    padding-top: 40px;
-    font-size: 12px;
-    color: rgba(255,255,255,.35);
+    padding-top: 48px;
+    font-size: 13px;
+    color: var(--hint);
   }
 
   /* ── Right panel ──────────────────────── */
   .right {
-    width: 440px;
+    width: 460px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--gray-100);
-    padding: 40px 32px;
+    background: #0A1520;
+    padding: 40px 36px;
   }
 
   .card {
     width: 100%;
-    background: var(--white);
+    background: var(--card);
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 36px 32px;
-    box-shadow: var(--shadow);
+    box-shadow: 0 20px 60px rgba(0,0,0,.4);
   }
 
   .card-title {
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--blue-dark);
-    text-align: center;
-    margin-bottom: 6px;
+    font-size: 22px; font-weight: 800;
+    color: var(--text);
+    margin-bottom: 5px;
   }
   .card-sub {
-    font-size: 13px;
-    color: var(--gray-500);
-    text-align: center;
-    margin-bottom: 24px;
+    font-size: 14px; color: var(--muted);
+    margin-bottom: 28px;
+    line-height: 1.5;
   }
 
   /* Tabs */
   .tabs {
     display: flex;
-    background: var(--gray-100);
+    background: var(--card2);
     border-radius: 8px;
     padding: 3px;
     margin-bottom: 24px;
+    border: 1px solid var(--border);
   }
   .tab {
-    flex: 1;
-    padding: 8px;
-    border: none;
-    background: transparent;
+    flex: 1; padding: 9px;
+    border: none; background: transparent;
     border-radius: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--gray-500);
-    cursor: pointer;
-    transition: all .2s;
+    font-size: 14px; font-weight: 600;
+    color: var(--muted);
+    cursor: pointer; transition: all .2s;
+    font-family: inherit;
   }
   .tab.active {
-    background: var(--white);
-    color: var(--blue-dark);
-    box-shadow: 0 1px 4px rgba(0,0,0,.1);
+    background: var(--gold-dim);
+    color: var(--gold);
+    border: 1px solid var(--border);
   }
 
   /* Form */
-  .form-group { margin-bottom: 14px; }
+  .form-group { margin-bottom: 16px; }
   .form-label {
     display: block;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--gray-700);
-    margin-bottom: 5px;
-    letter-spacing: .3px;
-    text-transform: uppercase;
+    font-size: 12px; font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 6px;
+    letter-spacing: .04em; text-transform: uppercase;
   }
   .form-input {
     width: 100%;
     padding: 11px 14px;
-    border: 1.5px solid var(--gray-300);
+    background: rgba(10,21,32,.7);
+    border: 1px solid rgba(212,168,67,.25);
     border-radius: var(--radius);
-    font-size: 14px;
-    color: var(--blue-dark);
-    background: var(--white);
-    outline: none;
-    transition: border-color .2s;
+    font-size: 15px; color: var(--text);
+    font-family: inherit;
+    outline: none; transition: border-color .2s, box-shadow .2s;
   }
-  .form-input:focus { border-color: var(--accent); }
-  .form-input::placeholder { color: var(--gray-300); }
+  .form-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,168,67,.1); }
+  .form-input::placeholder { color: var(--hint); }
 
   .btn-submit {
-    width: 100%;
-    padding: 13px;
-    background: var(--blue-mid);
-    color: var(--white);
-    border: none;
-    border-radius: var(--radius);
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background .2s;
-    margin-top: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    width: 100%; padding: 13px;
+    background: var(--gold); color: #0A1520;
+    border: none; border-radius: var(--radius);
+    font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: background .2s;
+    margin-top: 4px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: inherit;
   }
-  .btn-submit:hover { background: var(--blue-dark); }
+  .btn-submit:hover  { background: var(--gold-l); }
   .btn-submit:disabled { opacity: .6; cursor: not-allowed; }
 
-  .msg { min-height: 20px; margin: 8px 0 4px; font-size: 13px; }
+  .msg { min-height: 20px; margin: 8px 0 4px; font-size: 14px; }
   .msg.err { color: var(--err); }
-  .msg.ok  { color: #27ae60; }
+  .msg.ok  { color: var(--safe); }
 
   .divider {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 18px 0 14px;
-    color: var(--gray-300);
-    font-size: 12px;
+    display: flex; align-items: center; gap: 10px;
+    margin: 20px 0 16px;
+    color: var(--hint); font-size: 13px;
   }
   .divider::before, .divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--gray-300);
+    content: ''; flex: 1; height: 1px;
+    background: var(--border);
   }
 
   .btn-offline {
-    width: 100%;
-    padding: 10px;
-    border: 1.5px solid var(--gray-300);
+    width: 100%; padding: 11px;
+    border: 1px solid var(--border);
     border-radius: var(--radius);
-    background: transparent;
-    color: var(--gray-500);
-    font-size: 13px;
-    cursor: pointer;
-    transition: all .2s;
+    background: transparent; color: var(--muted);
+    font-size: 14px; cursor: pointer; transition: all .2s;
+    font-family: inherit;
   }
-  .btn-offline:hover { border-color: var(--gray-500); color: var(--gray-700); }
+  .btn-offline:hover { border-color: var(--gold); color: var(--gold); }
 
   .card-footer {
-    margin-top: 20px;
-    font-size: 11px;
-    color: var(--gray-300);
-    text-align: center;
+    margin-top: 20px; font-size: 13px;
+    color: var(--hint); text-align: center;
   }
 
-  /* ── Responsive ───────────────────────── */
+  /* ── Responsive ─────────────────────── */
   @media (max-width: 768px) {
-    body { flex-direction: column; overflow: auto; }
-    .left { padding: 48px 28px 32px; flex: none; min-height: 260px; }
-    .right { width: 100%; padding: 24px 20px 40px; background: var(--gray-100); }
-    .lang-toggle { top: 14px; right: 16px; }
+    body      { flex-direction: column; }
+    .left     { padding: 40px 28px 32px; min-height: auto; }
+    .right    { width: 100%; padding: 24px 20px 40px; }
+    .brand    { margin-bottom: 32px; }
+    .hero-sub { margin-bottom: 28px; }
   }
 </style>
 </head>
@@ -296,20 +272,18 @@
 <!-- Left branding panel -->
 <div class="left">
   <div class="brand">
-    <div class="brand-icon">₫</div>
-    <div>
-      <div class="brand-text-top" data-i18n="brand_top">Hộ Kinh Doanh Việt Nam</div>
-      <div class="brand-text-main">HKD Financial Health</div>
-    </div>
-    <!-- Language toggle inside left panel on dark background -->
+    <div class="brand-logo">đ</div>
+    <span class="brand-name">HKD</span>
+    <span class="brand-sep"></span>
+    <span class="brand-sub">Financial Health</span>
     <div class="lang-toggle">
       <button class="lang-btn active" id="btn-vi" onclick="setLang('vi')">VI</button>
       <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
     </div>
   </div>
 
-  <h1 class="left-title" data-i18n="left_title">Phân Tích Sức Khỏe<br>Tài Chính Hộ Kinh Doanh</h1>
-  <p class="left-sub" data-i18n="left_sub">Bộ công cụ phân tích tài chính chuyên sâu dành cho hộ kinh doanh — khung pháp lý 2026.</p>
+  <h1 class="hero-title" data-i18n="left_title">Phân Tích <span>Sức Khỏe</span><br>Tài Chính Hộ Kinh Doanh</h1>
+  <p class="hero-sub" data-i18n="left_sub">Bộ công cụ phân tích tài chính chuyên sâu dành cho hộ kinh doanh — khung pháp lý 2026.</p>
 
   <ul class="feature-list">
     <li class="feature-item"><span class="feature-dot"></span><span data-i18n="f1">Phân tích 8 chỉ số tài chính quan trọng</span></li>
@@ -371,18 +345,15 @@
 
     <div class="divider" data-i18n="or">hoặc</div>
     <button class="btn-offline" onclick="goOffline()" data-i18n="btn_offline">Tiếp tục không đăng nhập (lưu local)</button>
-
     <div class="card-footer" data-i18n="footer_note">Dành cho chủ hộ kinh doanh & kế toán</div>
   </div>
 </div>
 
 <script src="assets/js/api.js"></script>
 <script>
-/* ── i18n ─────────────────────────────────────────── */
 const T = {
   vi: {
-    brand_top:   'Hộ Kinh Doanh Việt Nam',
-    left_title:  'Phân Tích Sức Khỏe<br>Tài Chính Hộ Kinh Doanh',
+    left_title:  'Phân Tích <span>Sức Khỏe</span><br>Tài Chính Hộ Kinh Doanh',
     left_sub:    'Bộ công cụ phân tích tài chính chuyên sâu dành cho hộ kinh doanh — khung pháp lý 2026.',
     f1: 'Phân tích 8 chỉ số tài chính quan trọng',
     f2: 'Biểu đồ radar & xu hướng theo kỳ',
@@ -410,8 +381,7 @@ const T = {
     err_connect: 'Lỗi kết nối. Thử lại sau.',
   },
   en: {
-    brand_top:   'Vietnamese Household Business',
-    left_title:  'Financial Health Analysis<br>for Household Businesses',
+    left_title:  'Financial <span>Health</span><br>Analysis for Household Businesses',
     left_sub:    'In-depth financial analysis toolkit for household businesses — 2026 legal framework.',
     f1: 'Analyze 8 key financial indicators',
     f2: 'Radar chart & multi-period trends',
@@ -460,7 +430,6 @@ function setLang(l) {
     : 'Sign In — HKD Financial Health';
 }
 
-/* ── Tab switch ───────────────────────────────────── */
 function switchTab(tab) {
   document.getElementById('form-login').style.display    = tab === 'login' ? 'block' : 'none';
   document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
@@ -468,15 +437,12 @@ function switchTab(tab) {
   document.getElementById('tab-register').classList.toggle('active', tab === 'register');
 }
 
-/* ── Auth actions ─────────────────────────────────── */
 async function doLogin() {
   const email = document.getElementById('l-email').value.trim();
   const pass  = document.getElementById('l-pass').value;
   const msg   = document.getElementById('l-msg');
   const btn   = document.getElementById('l-btn');
-  msg.className = 'msg';
-  msg.textContent = T[lang].loading;
-  btn.disabled = true;
+  msg.className = 'msg'; msg.textContent = T[lang].loading; btn.disabled = true;
   try {
     const res  = await fetch(API_BASE + '/api/auth/login', {
       method: 'POST', headers: {'Content-Type':'application/json'},
@@ -485,8 +451,7 @@ async function doLogin() {
     const data = await res.json();
     if (!res.ok) { msg.className = 'msg err'; msg.textContent = data.error || data.message; btn.disabled = false; return; }
     saveAuth(data.user, data.accessToken, data.refreshToken);
-    msg.className = 'msg ok';
-    msg.textContent = '✓';
+    msg.className = 'msg ok'; msg.textContent = '✓';
     window.location.href = 'index.html';
   } catch {
     msg.className = 'msg err'; msg.textContent = T[lang].err_connect; btn.disabled = false;
@@ -499,9 +464,7 @@ async function doRegister() {
   const pass  = document.getElementById('r-pass').value;
   const msg   = document.getElementById('r-msg');
   const btn   = document.getElementById('r-btn');
-  msg.className = 'msg';
-  msg.textContent = T[lang].loading;
-  btn.disabled = true;
+  msg.className = 'msg'; msg.textContent = T[lang].loading; btn.disabled = true;
   try {
     const res  = await fetch(API_BASE + '/api/auth/register', {
       method: 'POST', headers: {'Content-Type':'application/json'},
@@ -516,18 +479,14 @@ async function doRegister() {
   }
 }
 
-function goOffline() {
-  window.location.href = 'index.html';
-}
+function goOffline() { window.location.href = 'index.html'; }
 
-/* ── Enter key support ────────────────────────────── */
 document.addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
   const loginVisible = document.getElementById('form-login').style.display !== 'none';
   if (loginVisible) doLogin(); else doRegister();
 });
 
-/* ── Init ─────────────────────────────────────────── */
 if (isLoggedIn()) window.location.href = 'index.html';
 setLang(lang);
 </script>
