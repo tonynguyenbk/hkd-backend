@@ -733,7 +733,7 @@ function renderStep4(res) {
   </div>
 
   <div id="t-hist" class="tab-content">
-    \${renderHistoryTab()}
+    ${renderHistoryTab()}
   </div>
 
   <div id="t-tax" class="tab-content">
@@ -1018,81 +1018,131 @@ function renderDelta(curr, prev, key, fmt, inverse=false) {
 /* Render history tab */
 function renderHistoryTab() {
   const hist = loadHistory();
-  if(hist.length < 2) return `
-    <div style="text-align:center;padding:3rem 1rem;">
-      <div style="font-size:32px;margin-bottom:1rem;">📈</div>
-      <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:8px;">${t('history.empty_title')}</div>
-      <div style="font-size:13px;color:var(--muted);line-height:1.7;">${t('history.empty_desc').replace('\n','<br>')}</div>
+
+  /* ── Empty state ─────────────────────── */
+  if(hist.length < 1) return `
+    <div style="text-align:center;padding:4rem 1rem;">
+      <div style="font-size:40px;margin-bottom:1rem;">📊</div>
+      <div style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:10px;">${t('history.empty_title')}</div>
+      <div style="font-size:15px;color:var(--muted);line-height:1.7;max-width:380px;margin:0 auto;">${t('history.empty_desc').replace('\n','<br>')}</div>
     </div>`;
 
-  const labels = hist.slice(0,6).reverse().map(h=>`${h.periodLabel} ${h.savedAt}`);
-  const scores = hist.slice(0,6).reverse().map(h=>h.score);
-  const dtData = hist.slice(0,6).reverse().map(h=>+(h.summary.dtNam||0).toFixed(1));
-  const lnData = hist.slice(0,6).reverse().map(h=>+(h.summary.lnRong||0).toFixed(1));
+  /* ── Data prep ───────────────────────── */
+  const latest  = hist[0];
+  const prev    = hist[1] || null;
+  const best    = hist.reduce((a,b)=>b.score>a.score?b:a, hist[0]);
+  const dScore  = prev ? latest.score - prev.score : null;
+  const dColor  = dScore===null?'var(--hint)':dScore>0?'var(--safe)':dScore<0?'var(--danger)':'var(--muted)';
+  const dArrow  = dScore===null?'':dScore>0?'↑':dScore<0?'↓':'→';
+  const scoreColor = s => s>=70?'var(--safe)':s>=40?'var(--warn)':'var(--danger)';
 
-  const rows = hist.slice(0,12).map((h,i)=>{
-    const prev = hist[i+1];
-    const dScore = prev ? h.score - prev.score : null;
-    const dColor = dScore===null?'var(--hint)':dScore>0?'var(--safe)':dScore<0?'var(--danger)':'var(--muted)';
-    return `<tr>
-      <td style="padding:8px 10px;font-size:12px;color:var(--muted)">${h.savedAt}</td>
-      <td style="padding:8px 10px;font-size:12px">${h.periodLabel}</td>
-      <td style="padding:8px 10px;font-size:13px;font-weight:700;color:${h.score>=70?'var(--safe)':h.score>=40?'var(--warn)':'var(--danger)'}">${h.score}</td>
-      <td style="padding:8px 10px;font-size:11px;color:${dColor}">${dScore===null?'—':dScore>0?'+'+dScore:dScore}</td>
-      <td style="padding:8px 10px;font-size:12px;color:var(--muted)">₫${+(h.summary.dtNam||0).toFixed(0)} tr</td>
-      <td style="padding:8px 10px;font-size:12px;color:${(h.summary.lnRong||0)>=0?'var(--safe)':'var(--danger)'}">₫${+(h.summary.lnRong||0).toFixed(0)} tr</td>
-      <td style="padding:8px 10px">
-        <button onclick="reloadSnapshot(${i})" style="font-size:12px;padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:inherit">${t('btn.view_again')}</button>
-      </td>
-    </tr>`;
+  const chartHist = hist.slice(0,8).reverse();
+  const labels  = chartHist.map(h=>`${h.periodLabel} ${h.savedAt}`);
+  const scores  = chartHist.map(h=>h.score);
+  const dtData  = chartHist.map(h=>+(h.summary.dtNam||0).toFixed(1));
+  const lnData  = chartHist.map(h=>+(h.summary.lnRong||0).toFixed(1));
+  const margins = chartHist.map(h=>h.summary.dtNam>0?(+(h.summary.lnRong||0)/h.summary.dtNam*100).toFixed(1):0);
+
+  /* ── Period cards (max 12) ───────────── */
+  const cards = hist.slice(0,12).map((h,i)=>{
+    const p = hist[i+1];
+    const ds = p ? h.score - p.score : null;
+    const dsLabel = ds===null ? '' : (ds>0?`<span style="color:var(--safe);font-size:12px">↑+${ds}</span>`
+                                      :ds<0?`<span style="color:var(--danger);font-size:12px">↓${ds}</span>`
+                                      :`<span style="color:var(--muted);font-size:12px">→0</span>`);
+    const sc = scoreColor(h.score);
+    const margin = h.summary.dtNam>0 ? (h.summary.lnRong/h.summary.dtNam*100).toFixed(1) : '—';
+    return `
+    <div class="hist-card" onclick="reloadSnapshot(${i})" title="${t('btn.view_again')}">
+      <div class="hist-card-top">
+        <div>
+          <div class="hist-date">${h.savedAt}</div>
+          <div class="hist-period">${h.periodLabel}</div>
+        </div>
+        <div class="hist-score-badge" style="color:${sc};border-color:${sc}">
+          ${h.score}
+          <div style="font-size:10px;color:var(--hint)">/ 100</div>
+        </div>
+      </div>
+      <div class="hist-card-mid">
+        <div class="hist-metric">
+          <div class="hist-metric-v">₫${fmt(h.summary.dtNam)}</div>
+          <div class="hist-metric-l">${t('result.tile_revenue')}</div>
+        </div>
+        <div class="hist-metric">
+          <div class="hist-metric-v" style="color:${(h.summary.lnRong||0)>=0?'var(--safe)':'var(--danger)'}">₫${fmt(h.summary.lnRong)}</div>
+          <div class="hist-metric-l">${t('result.tile_profit')}</div>
+        </div>
+        <div class="hist-metric">
+          <div class="hist-metric-v">${margin}%</div>
+          <div class="hist-metric-l">${t('history.margin')}</div>
+        </div>
+      </div>
+      <div class="hist-card-bot">
+        ${dsLabel}
+        <span class="hist-reload">${t('btn.view_again')} →</span>
+      </div>
+    </div>`;
   }).join('');
 
   return `
-    <div class="card">
-      <div class="card-title">${t('history.card_score')}</div>
-      <div style="position:relative;height:200px"><canvas id="hist-score-chart"></canvas></div>
+  <!-- ── Summary stats ─────────────────── -->
+  <div class="hist-stats">
+    <div class="hist-stat">
+      <div class="hist-stat-v">${hist.length}</div>
+      <div class="hist-stat-l">${t('history.total_periods')}</div>
     </div>
-    <div class="card" style="margin-top:10px">
-      <div class="card-title">${t('history.card_revenue')}</div>
-      <div style="position:relative;height:180px"><canvas id="hist-dt-chart"></canvas></div>
+    <div class="hist-stat">
+      <div class="hist-stat-v" style="color:${scoreColor(latest.score)}">${latest.score}</div>
+      <div class="hist-stat-l">${t('history.latest_score')}</div>
     </div>
-    <div class="card" style="margin-top:10px">
-      <div class="card-title">${t('history.card_title',{count:hist.length})}</div>
-      <div style="overflow-x:auto">
-        <table style="width:100%;border-collapse:collapse">
-          <thead><tr style="background:var(--gold-dim)">
-            <th style="padding:7px 10px;font-size:12px;color:var(--gold);text-align:left">${t('history.th_date')}</th>
-            <th style="padding:7px 10px;font-size:12px;color:var(--gold);text-align:left">${t('history.th_period')}</th>
-            <th style="padding:7px 10px;font-size:12px;color:var(--gold);text-align:left">${t('history.th_score')}</th>
-            <th style="padding:7px 10px;font-size:12px;color:var(--gold);text-align:left">${t('history.th_delta')}</th>
-            <th style="padding:7px 10px;font-size:12px;color:var(--gold);text-align:left">${t('history.th_revenue')}</th>
-            <th style="padding:7px 10px;font-size:12px;color:var(--gold);text-align:left">${t('history.th_profit')}</th>
-            <th style="padding:7px 10px;font-size:12px;color:var(--gold)"></th>
-          </tr></thead>
-          <tbody style="font-size:12px">${rows}</tbody>
-        </table>
-      </div>
-      <div style="margin-top:10px;text-align:right">
-        <button onclick="if(confirm(t('btn.confirm_delete'))){clearHistory();renderCurrentStep()}"
-          style="font-size:12px;padding:5px 12px;border-radius:5px;border:1px solid rgba(239,68,68,0.3);background:transparent;color:var(--danger);cursor:pointer;font-family:inherit">
-          ${t('btn.delete_history')}
-        </button>
-      </div>
+    <div class="hist-stat">
+      <div class="hist-stat-v" style="color:${dColor}">${dArrow}${dScore===null?'—':Math.abs(dScore)}</div>
+      <div class="hist-stat-l">${t('history.vs_prev')}</div>
     </div>
-    <script>
-    (function(){
-      const labels=${JSON.stringify(labels)};
-      const scores=${JSON.stringify(scores)};
-      const dtData=${JSON.stringify(dtData)};
-      const lnData=${JSON.stringify(lnData)};
-      setTimeout(()=>{
-        const sc=document.getElementById('hist-score-chart');
-        if(sc) new Chart(sc,{type:'line',data:{labels,datasets:[{label:t('history.chart_score'),data:scores,borderColor:'#D4A843',backgroundColor:'rgba(212,168,67,0.1)',tension:0.3,fill:true,pointRadius:4,pointBackgroundColor:scores.map(s=>s>=70?'#22C55E':s>=40?'#F59E0B':'#EF4444')}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{min:0,max:100,ticks:{color:'#64748B',font:{size:9}},grid:{color:'rgba(255,255,255,0.05)'}},x:{ticks:{color:'#94A3B8',font:{size:9}},grid:{display:false}}},plugins:{legend:{display:false}}}});
-        const dt=document.getElementById('hist-dt-chart');
-        if(dt) new Chart(dt,{type:'bar',data:{labels,datasets:[{label:t('history.chart_dt'),data:dtData,backgroundColor:'rgba(212,168,67,0.4)',borderColor:'#D4A843',borderWidth:1,borderRadius:3},{label:t('history.chart_ln'),data:lnData,backgroundColor:lnData.map(v=>v>=0?'rgba(34,197,94,0.4)':'rgba(239,68,68,0.4)'),borderColor:lnData.map(v=>v>=0?'#22C55E':'#EF4444'),borderWidth:1,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{ticks:{color:'#64748B',font:{size:9}},grid:{color:'rgba(255,255,255,0.05)'}},x:{ticks:{color:'#94A3B8',font:{size:9}},grid:{display:false}}},plugins:{legend:{display:false}}}});
-      },100);
-    })();
-    <\/script>`;
+    <div class="hist-stat">
+      <div class="hist-stat-v" style="color:${scoreColor(best.score)}">${best.score}</div>
+      <div class="hist-stat-l">${t('history.best_score')}</div>
+    </div>
+  </div>
+
+  <!-- ── Trend chart ───────────────────── -->
+  <div class="card">
+    <div class="card-title">${t('history.card_score')}</div>
+    <div style="position:relative;height:200px"><canvas id="hist-score-chart"></canvas></div>
+  </div>
+
+  <!-- ── Period cards grid ─────────────── -->
+  <div class="card">
+    <div class="card-title">${t('history.card_title',{count:hist.length})}
+      <button onclick="if(confirm(t('btn.confirm_delete'))){clearHistory();renderCurrentStep()}"
+        style="margin-left:auto;font-size:12px;padding:4px 12px;border-radius:5px;border:1px solid rgba(239,68,68,.3);background:transparent;color:var(--danger);cursor:pointer;font-family:inherit;font-weight:600">
+        ${t('btn.delete_history')}
+      </button>
+    </div>
+    <div class="hist-grid">${cards}</div>
+  </div>
+
+  <!-- ── Revenue & margin chart ────────── -->
+  <div class="card">
+    <div class="card-title">${t('history.card_revenue')}</div>
+    <div style="position:relative;height:200px"><canvas id="hist-dt-chart"></canvas></div>
+  </div>
+
+  <script>
+  (function(){
+    const labels=${JSON.stringify(labels)};
+    const scores=${JSON.stringify(scores)};
+    const dtData=${JSON.stringify(dtData)};
+    const lnData=${JSON.stringify(lnData)};
+    setTimeout(()=>{
+      const sc=document.getElementById('hist-score-chart');
+      if(sc) new Chart(sc,{type:'line',data:{labels,datasets:[{data:scores,borderColor:'#D4A843',backgroundColor:'rgba(212,168,67,0.08)',tension:0.35,fill:true,pointRadius:5,pointBackgroundColor:scores.map(s=>s>=70?'#22C55E':s>=40?'#F59E0B':'#EF4444'),pointBorderColor:'#0D1B2A',pointBorderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{min:0,max:100,ticks:{color:'#64748B',font:{size:11}},grid:{color:'rgba(255,255,255,0.05)'}},x:{ticks:{color:'#94A3B8',font:{size:10}},grid:{display:false}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' Điểm: '+ctx.raw}}}}});
+      const dt=document.getElementById('hist-dt-chart');
+      if(dt) new Chart(dt,{type:'bar',data:{labels,datasets:[{label:t('history.chart_dt'),data:dtData,backgroundColor:'rgba(212,168,67,0.35)',borderColor:'#D4A843',borderWidth:1,borderRadius:4},{label:t('history.chart_ln'),data:lnData,backgroundColor:lnData.map(v=>v>=0?'rgba(34,197,94,0.35)':'rgba(239,68,68,0.35)'),borderColor:lnData.map(v=>v>=0?'#22C55E':'#EF4444'),borderWidth:1,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{ticks:{color:'#64748B',font:{size:11}},grid:{color:'rgba(255,255,255,0.05)'}},x:{ticks:{color:'#94A3B8',font:{size:10}},grid:{display:false}}},plugins:{legend:{labels:{color:'#94A3B8',font:{size:11}}}}}});
+    },100);
+  })();
+  <\/script>`;
 }
 
 function reloadSnapshot(idx) {

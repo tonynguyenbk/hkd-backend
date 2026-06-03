@@ -214,6 +214,27 @@ select option{background:#162233;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 .disclaimer{font-size:13px;color:rgba(148,163,184,.5);text-align:center;margin-top:1.5rem;line-height:1.7;}
 
+/* ── HISTORY TAB ─────────────────────────────────────────────── */
+.hist-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1rem;}
+@media(max-width:600px){.hist-stats{grid-template-columns:1fr 1fr;}}
+.hist-stat{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-align:center;}
+.hist-stat-v{font-size:26px;font-weight:800;color:var(--text);line-height:1.1;}
+.hist-stat-l{font-size:13px;color:var(--muted);margin-top:4px;}
+
+.hist-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:4px;}
+.hist-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:all .2s;}
+.hist-card:hover{border-color:var(--gold);background:var(--card3);transform:translateY(-1px);}
+.hist-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
+.hist-date{font-size:13px;color:var(--muted);}
+.hist-period{font-size:15px;font-weight:700;color:var(--text);margin-top:2px;}
+.hist-score-badge{width:52px;height:52px;border-radius:50%;border:2.5px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex-shrink:0;}
+.hist-card-mid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:10px 0;border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05);}
+.hist-metric-v{font-size:14px;font-weight:700;color:var(--gold-light);}
+.hist-metric-l{font-size:11px;color:var(--hint);margin-top:2px;}
+.hist-card-bot{display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
+.hist-reload{font-size:12px;color:var(--hint);transition:color .2s;}
+.hist-card:hover .hist-reload{color:var(--gold);}
+
 /* field highlight when loaded */
 input.loaded-val{border-color:rgba(34,197,94,.5)!important;background:rgba(34,197,94,.04)!important;}
 
