@@ -56,3 +56,14 @@ window.i18n = {
 
 /* Global shorthand — matches guide's t() pattern */
 window.t = (key, vars) => window.i18n.t(key, vars);
+
+/* tArr — returns raw array (for legal_items, monthsShort etc.) */
+window.tArr = (key) => {
+  const keys = key.split('.');
+  let obj = (window.translations || {})[window.i18n.lang] || (window.translations || {})['vi'] || {};
+  for (const k of keys) {
+    if (obj === undefined || obj === null) return [];
+    obj = obj[k];
+  }
+  return Array.isArray(obj) ? obj : [];
+};

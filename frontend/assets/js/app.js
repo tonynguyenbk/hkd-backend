@@ -756,7 +756,7 @@ function renderStep4(res) {
     </div>
     <div class="card"><div class="card-title">${t('tax.legal_title')}</div>
       <div style="font-size:13px;color:var(--muted);line-height:2">
-        ${(t('tax.legal_items')||[]).map?.(item=>`<div>${item}</div>`).join('')||''}
+        ${tArr('tax.legal_items').map(item=>`<div style="padding:4px 0;line-height:1.7">${item}</div>`).join('')}
       </div>
     </div>
   </div>
