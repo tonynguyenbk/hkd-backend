@@ -57,26 +57,33 @@
     position: relative;
     overflow: hidden;
     border-right: 1px solid var(--border);
+    background-image: url('https://t4.ftcdn.net/jpg/09/31/49/29/360_F_931492933_hIAKrVpKRIm65JlsTFY3Q17mejirrlWq.jpg');
+    background-size: cover;
+    background-position: center;
   }
-  /* Subtle gold glow top-right */
+  /* Dark overlay để text dễ đọc */
   .left::before {
     content: '';
     position: absolute;
-    width: 500px; height: 500px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(212,168,67,.06) 0%, transparent 70%);
-    top: -150px; right: -150px;
+    inset: 0;
+    background: linear-gradient(145deg, rgba(10,21,32,.88) 0%, rgba(13,27,42,.82) 60%, rgba(17,32,48,.78) 100%);
     pointer-events: none;
+    z-index: 0;
   }
-  /* Subtle accent bottom-left */
+  /* Đảm bảo nội dung nằm trên overlay */
+  .brand, .hero-title, .hero-sub, .feature-list, .left-footer {
+    position: relative;
+    z-index: 1;
+  }
   .left::after {
     content: '';
     position: absolute;
     width: 320px; height: 320px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(37,99,235,.05) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(212,168,67,.08) 0%, transparent 70%);
     bottom: -100px; left: -80px;
     pointer-events: none;
+    z-index: 0;
   }
 
   /* Brand row — matches app header */
